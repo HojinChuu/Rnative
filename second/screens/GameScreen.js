@@ -6,6 +6,7 @@ import {
   Alert,
   Text,
   ScrollView,
+  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -26,17 +27,17 @@ const generateRandomBeetwen = (min, max, exclude) => {
   }
 };
 
-const renderListItem = (value, numOfRound) => (
-  <View key={value} style={styles.listItem}>
-    <BodyText># {numOfRound}</BodyText>
-    <BodyText>{value}</BodyText>
+const renderListItem = (listLength, itemData) => (
+  <View style={styles.listItem}>
+    <BodyText># {listLength - itemData.index}</BodyText>
+    <BodyText>{itemData.item}</BodyText>
   </View>
 );
 
 const GameScreen = ({ userChoice, onGameOver }) => {
   const initialGuess = generateRandomBeetwen(1, 100, userChoice);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
-  const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+  const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
@@ -71,7 +72,10 @@ const GameScreen = ({ userChoice, onGameOver }) => {
     );
     setCurrentGuess(nextNumber);
     // setRounds((curRounds) => curRounds + 1);
-    setPastGuesses((curPastGuesses) => [nextNumber, ...curPastGuesses]);
+    setPastGuesses((curPastGuesses) => [
+      nextNumber.toString(),
+      ...curPastGuesses,
+    ]);
   };
 
   return (
@@ -86,11 +90,16 @@ const GameScreen = ({ userChoice, onGameOver }) => {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
-      <ScrollView>
+      {/* <ScrollView>
         {pastGuesses.map((guess, index) =>
           renderListItem(guess, pastGuesses.length - index)
         )}
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        keyExtractor={(item) => item}
+        data={pastGuesses}
+        renderItem={renderListItem.bind(this, pastGuesses.length)}
+      />
     </View>
   );
 };
