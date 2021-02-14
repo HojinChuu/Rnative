@@ -2,10 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  Button,
   Alert,
   Text,
-  ScrollView,
   FlatList,
   Dimensions,
 } from "react-native";
